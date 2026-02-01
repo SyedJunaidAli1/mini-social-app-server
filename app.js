@@ -17,6 +17,10 @@ app.use(
 
 import authRoutes from "./routes/authRoutes.js";
 app.use("/api/auth", authRoutes);
+import postRoutes from "./routes/postRoutes.js";
+
+app.use("/api/posts", postRoutes);
+
 
 
 export default app;
