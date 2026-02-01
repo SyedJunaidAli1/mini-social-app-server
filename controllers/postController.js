@@ -1,27 +1,50 @@
 import Post from "../models/Post.js";
-
+import cloudinary from "../config/cloudinary.js";
 
 // ========================
 // CREATE POST
 // ========================
 export const createPost = async (req, res) => {
   try {
-    const { text, imageUrl } = req.body;
+    const { text } = req.body;
+    let imageUrl = "";
 
-    if (!text?.trim() && !imageUrl) {
-      return res.status(400).json({
-        message: "Post must contain text or image",
+    // If image exists → upload
+    if (req.file) {
+      const result = await cloudinary.uploader.upload_stream(
+        { folder: "social_posts" },
+        async (error, result) => {
+          if (error) {
+            return res.status(500).json({
+              message: "Image upload failed",
+            });
+          }
+
+          imageUrl = result.secure_url;
+
+          const post = await Post.create({
+            userId: req.user._id,
+            username: req.user.username,
+            text,
+            imageUrl,
+          });
+
+          res.status(201).json(post);
+        }
+      );
+
+      result.end(req.file.buffer);
+    } else {
+      // No image → normal post
+      const post = await Post.create({
+        userId: req.user._id,
+        username: req.user.username,
+        text,
+        imageUrl,
       });
+
+      res.status(201).json(post);
     }
-
-    const post = await Post.create({
-      userId: req.user._id,
-      username: req.user.username,
-      text,
-      imageUrl,
-    });
-
-    res.status(201).json(post);
   } catch (error) {
     console.error(error);
     res.status(500).json({
@@ -29,6 +52,7 @@ export const createPost = async (req, res) => {
     });
   }
 };
+
 
 
 // ========================
