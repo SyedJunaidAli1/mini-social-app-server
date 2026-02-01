@@ -55,11 +55,10 @@ const postSchema = new mongoose.Schema(
 
 postSchema.index({ createdAt: -1 });
 
-postSchema.pre("save", function (next) {
-  if (!this.text && !this.imageUrl) {
-    return next(new Error("Post must contain text or an image"));
+postSchema.pre("save", async function () {
+  if (!this.text?.trim() && !this.imageUrl) {
+    throw new Error("Post must contain text or an image");
   }
-  next();
 });
 
 const Post = mongoose.model("Post", postSchema);

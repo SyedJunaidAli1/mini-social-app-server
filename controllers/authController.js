@@ -1,7 +1,6 @@
 import User from "../models/User.js";
 import generateToken from "../utils/generateToken.js";
 
-
 // =======================
 // SIGNUP
 // =======================
@@ -44,13 +43,12 @@ export const signup = async (req, res) => {
       token,
     });
   } catch (error) {
+    console.error(error); // VERY IMP
     res.status(500).json({
-      message: "Server error during signup",
+      message: error.message,
     });
   }
 };
-
-
 
 // =======================
 // LOGIN
