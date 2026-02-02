@@ -13,7 +13,6 @@ console.log("FRONTEND:", process.env.FRONTEND_ENDPOINT);
 
 app.use(
   cors({
-    
     origin: process.env.FRONTEND_ENDPOINT,
     credentials: true,
   }),
@@ -24,7 +23,5 @@ app.use("/api/auth", authRoutes);
 import postRoutes from "./routes/postRoutes.js";
 
 app.use("/api/posts", postRoutes);
-
-
 
 export default app;
